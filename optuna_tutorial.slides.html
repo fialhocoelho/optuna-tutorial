@@ -13215,9 +13215,44 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Optuna:-Optimization-Framework">Optuna: Optimization Framework<a class="anchor-link" href="#Optuna:-Optimization-Framework">&#182;</a></h2><h3 id="Paper:">Paper:<a class="anchor-link" href="#Paper:">&#182;</a></h3><p><a href="https://arxiv.org/abs/1907.10902"><strong>Optuna: A Next-generation Hyperparameter Optimization Framework. In KDD.</strong></a></p>
-<p>Takuya Akiba, Shotaro Sano, Toshihiko Yanase, Takeru Ohta,and Masanori Koyama. 2019.</p>
-<p>KDD '19: Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</p>
+<h3 id="Definitions:">Definitions:<a class="anchor-link" href="#Definitions:">&#182;</a></h3><ul>
+<li><p><strong>Parameter</strong>:</p>
+<blockquote><p>A model parameter is a configuration variable that is <strong>internal to the model</strong> and whose value can be <strong>estimated from data.</strong></p>
+</blockquote>
+<ul>
+<li>E.g.:<ul>
+<li>The coefficients (or weights) of linear and logistic regression models.</li>
+<li>Weights and biases of a nn</li>
+<li>The cluster centroids in clustering</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Definitions:">Definitions:<a class="anchor-link" href="#Definitions:">&#182;</a></h3><ul>
+<li><p><strong>Hiperparameter</strong>:</p>
+<blockquote><p>A model hyperparameter is a configuration that is <strong>external to the model</strong> and whose value <strong>cannot be estimated from data.</strong></p>
+</blockquote>
+<ul>
+<li>E.g.:<ul>
+<li>Learning rate</li>
+<li>Dropout rate</li>
+<li>Early stop</li>
+<li>Neurons</li>
+<li>Layers</li>
+<li>alpha, beta, ...</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
@@ -13225,11 +13260,212 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Overview-of-Optuna&#8217;s-system-design">Overview of Optuna&#8217;s system design<a class="anchor-link" href="#Overview-of-Optuna&#8217;s-system-design">&#182;</a></h3><p><img src="img/optuna_flow.png"/></p>
+<h1 id="Hyperparameter-tuning-problem">Hyperparameter tuning problem<a class="anchor-link" href="#Hyperparameter-tuning-problem">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="When-we-need-to-tune?">When we need to tune?<a class="anchor-link" href="#When-we-need-to-tune?">&#182;</a></h2>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div>
+    <img src="img/just_runs.jpg" style="width:600px; margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Hyperparameter-tuning-Complexity">Hyperparameter tuning Complexity<a class="anchor-link" href="#Hyperparameter-tuning-Complexity">&#182;</a></h1>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div>
+    <img src="img/headache.jpg" style="width:375px; margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Hyperparameter-tuning-Complexity">Hyperparameter tuning Complexity<a class="anchor-link" href="#Hyperparameter-tuning-Complexity">&#182;</a></h1><ul>
+<li>A <strong>NP-Hard</strong> problem</li>
+<li><strong>High-dimensionality</strong> problem<ul>
+<li>X hyperparameters creates X dimension to describe a objetive function/best combination</li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
 </div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Tuning-techniques">Tuning techniques<a class="anchor-link" href="#Tuning-techniques">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><center><h1>Hyperparameter search space</h1></center>
+<br>
+A surface to be searched where:</p>
+<p><li><b>each dimension represents a hyperparameter</b> and </li></p>
+<p><li><b>each point represents one model configuration</b> (hyperparameter set) </li>
+<br><br></p>
+<div>
+    <img src="img/blinds.png" style="width:500px; margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><h1>Hand tuning by "trial and error"</h1></center><p><br></p>
+<div>
+    <img src="img/blinds720.gif" style="margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hand-tuning-by-&quot;trial-and-error&quot;"><strong>Hand tuning</strong> by "trial and error"<a class="anchor-link" href="#Hand-tuning-by-&quot;trial-and-error&quot;">&#182;</a></h2><ul>
+<li><p>for hyperparameter_1:</p>
+<ul>
+<li>for hyperparameter_2:<ul>
+<li>for hyperparameter_3:<ul>
+<li>for hyperparameter_4:<ul>
+<li>...</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Computationally <strong>expensive</strong></p>
+</li>
+<li><strong>Curse of dimensionality</strong></li>
+</ul>
+<div>
+    <img src="img/run.png" style="width:300px; margin:0 auto; padding-top: 50px;"/>
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Locality-and-globality">Locality and globality<a class="anchor-link" href="#Locality-and-globality">&#182;</a></h2><div>
+    <img src="img/gradient.png" style="width:700px; margin:0 auto; padding-top: 10px;"/>
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Grid-search">Grid search<a class="anchor-link" href="#Grid-search">&#182;</a></h2><ul>
+<li>Easy to implement (many apis E.g.: scikit)</li>
+<li>Works fine with few hyperparameters (low dimensionality)</li>
+<li>the number of experiments grows exponentially
+<br><br><br><div>
+  <img src="img/grid.png" style="width:400px; margin:0 auto;"/>
+</div></li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Random-search">Random search<a class="anchor-link" href="#Random-search">&#182;</a></h2><ul>
+<li>Easy to implement (many apis E.g.: scikit)</li>
+<li>Works fine with few hyperparameters (low dimensionality)</li>
+<li>the number of experiments grows exponentially
+<br><br><br><div>
+  <img src="img/random.png" style="width:400px; margin:0 auto;"/>
+</div></li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Grid-search-x-random-search">Grid search x random search<a class="anchor-link" href="#Grid-search-x-random-search">&#182;</a></h2><p><br></p>
+<div>
+    <img src="img/gridxrand.png" style="margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Other-optimization-techniques">Other optimization techniques<a class="anchor-link" href="#Other-optimization-techniques">&#182;</a></h1><ul>
+<li><strong>Bayesian Optimization</strong><ul>
+<li>A black-box estimator to approximate complex functions</li>
+</ul>
+</li>
+<li>Successive Halving<ul>
+<li>hyper parameter configuration set is definied randomly</li>
+<li>throw out the worst performing trials and only continue running the best performing trials, until a single hyper parameter configuration remains.</li>
+</ul>
+</li>
+<li>Hyperband<ul>
+<li>a grid search over the optimal allocation strategy</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Optimization-Tutorial">Optimization Tutorial<a class="anchor-link" href="#Optimization-Tutorial">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Optuna:-Optimization-Framework">Optuna: Optimization Framework<a class="anchor-link" href="#Optuna:-Optimization-Framework">&#182;</a></h2><h3 id="Paper:">Paper:<a class="anchor-link" href="#Paper:">&#182;</a></h3><p><a href="https://arxiv.org/abs/1907.10902"><strong>Optuna: A Next-generation Hyperparameter Optimization Framework. In KDD.</strong></a></p>
+<p>Takuya Akiba, Shotaro Sano, Toshihiko Yanase, Takeru Ohta,and Masanori Koyama. 2019.</p>
+<p>KDD '19: Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Overview-of-Optuna&#8217;s-system-design">Overview of Optuna&#8217;s system design<a class="anchor-link" href="#Overview-of-Optuna&#8217;s-system-design">&#182;</a></h3><p><img src="img/optuna_flow.png"/></p>
+
+</div>
+</div>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13293,7 +13529,7 @@ a.anchor-link {
 
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13331,7 +13567,7 @@ dropout_rate = trial.suggest_float("dropout_rate", 0.0, 1.0)</code></pre>
 
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13365,7 +13601,7 @@ if trial.should_prune():
 
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13384,11 +13620,11 @@ if trial.should_prune():
 </div><div class="fragment">
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span>
-    <span class="n">study_name</span><span class="o">=</span><span class="s1">&#39;opt_tutorial&#39;</span><span class="p">,</span>
+    <span class="n">study_name</span><span class="o">=</span><span class="s1">&#39;opt_tutorial2&#39;</span><span class="p">,</span>
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;sqlite:///tutorial.db&#39;</span><span class="p">,</span>
     <span class="n">load_if_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;maximize&quot;</span><span class="p">)</span>
@@ -13408,7 +13644,7 @@ if trial.should_prune():
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre><span class="ansi-green-fg">[I 2022-04-06 13:46:57,711]</span> Using an existing study with name &#39;opt_tutorial&#39; instead of creating a new one.
+<pre><span class="ansi-green-fg">[I 2022-04-22 11:40:39,286]</span> Using an existing study with name &#39;opt_tutorial2&#39; instead of creating a new one.
 </pre>
 </div>
 </div>
@@ -13416,7 +13652,7 @@ if trial.should_prune():
 </div>
 </div>
 
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13435,7 +13671,7 @@ if trial.should_prune():
 
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13448,7 +13684,7 @@ if trial.should_prune():
 </div><div class="fragment">
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">trial</span> <span class="o">=</span> <span class="n">study</span><span class="o">.</span><span class="n">best_trial</span>
@@ -13476,15 +13712,15 @@ if trial.should_prune():
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Best trial:
-    Value:  0.828125
+    Value:  0.8296875
 Params: 
-    dropout_l0: 0.29733833743419186
-    dropout_l1: 0.18955128033949867
-    lr: 0.0015365378703487743
+    dropout_l0: 0.2083603371473296
+    dropout_l1: 0.29475991600696116
+    lr: 0.004143220502481869
     n_layers: 2
-    n_units_l0: 123
-    n_units_l1: 114
-    optimizer: RMSprop
+    n_units_l0: 119
+    n_units_l1: 89
+    optimizer: Adam
 </pre>
 </div>
 </div>
@@ -13496,15 +13732,31 @@ Params:
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="ok,-but...">ok, but...<a class="anchor-link" href="#ok,-but...">&#182;</a></h2><p><img src="img/talk-is-cheap-show-me-the-code.jpg"/></p>
-
+<h2 id="ok,-but...">ok, but...<a class="anchor-link" href="#ok,-but...">&#182;</a></h2><p><br></p>
+<div>
+    <img src="img/talk-is-cheap-show-me-the-code.jpg" style="width:500px; margin:0 auto;"/>
+</div>
 </div>
 </div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Tks!">Tks!<a class="anchor-link" href="#Tks!">&#182;</a></h1><p><strong>e-mail:</strong> jefferson@fialhocoelho.com.br</p>
+<center><h1>After this tutorial...</h1></center><p><br></p>
+<div>
+    <img src="img/peter.gif" style="width:900px; margin:0 auto;"/>
+</div>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Tks!">Tks!<a class="anchor-link" href="#Tks!">&#182;</a></h1><p><strong>e-mail:</strong></p>
+<ul>
+<li>jefferson.jesus@itau-unibanco.com.br</li>
+<li>jefferson@fialhocoelho.com.br</li>
+</ul>
 <p><strong>tutorial repo:</strong> <a href="https://github.com/fialhocoelho/optune-tutorial">github.com/fialhocoelho/optune-tutorial</a></p>
 
 </div>
